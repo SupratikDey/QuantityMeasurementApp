@@ -24,7 +24,6 @@ public class QuantityMeasurementApp {
         }
     }
 
-    // Quantity class
     static class Quantity {
         private final double value;
         private final LengthUnit unit;
@@ -41,29 +40,35 @@ public class QuantityMeasurementApp {
             return unit.toFeet(value);
         }
 
-        // ✅ UC6: Instance addition (result in THIS unit)
-        public Quantity add(Quantity other) {
-            if (other == null) throw new IllegalArgumentException("Other quantity cannot be null");
-
-            double sumFeet = this.toFeet() + other.toFeet();
-            double resultValue = this.unit.fromFeet(sumFeet);
-
-            return new Quantity(resultValue, this.unit);
+        // 🔹 UC7: Private helper (DRY)
+        private static Quantity addInternal(Quantity q1, Quantity q2, LengthUnit targetUnit) {
+            double sumFeet = q1.toFeet() + q2.toFeet();
+            double result = targetUnit.fromFeet(sumFeet);
+            return new Quantity(result, targetUnit);
         }
 
-        // ✅ Static addition (explicit target unit)
+        // ✅ UC6 (default: first operand unit)
+        public Quantity add(Quantity other) {
+            if (other == null) throw new IllegalArgumentException("Other cannot be null");
+            return addInternal(this, other, this.unit);
+        }
+
+        // ✅ UC7 (explicit target unit)
+        public Quantity add(Quantity other, LengthUnit targetUnit) {
+            if (other == null) throw new IllegalArgumentException("Other cannot be null");
+            if (targetUnit == null) throw new IllegalArgumentException("Target unit cannot be null");
+
+            return addInternal(this, other, targetUnit);
+        }
+
+        // ✅ Static UC7 API
         public static Quantity add(Quantity q1, Quantity q2, LengthUnit targetUnit) {
-            if (q1 == null || q2 == null) {
+            if (q1 == null || q2 == null)
                 throw new IllegalArgumentException("Operands cannot be null");
-            }
-            if (targetUnit == null) {
+            if (targetUnit == null)
                 throw new IllegalArgumentException("Target unit cannot be null");
-            }
 
-            double sumFeet = q1.toFeet() + q2.toFeet();
-            double resultValue = targetUnit.fromFeet(sumFeet);
-
-            return new Quantity(resultValue, targetUnit);
+            return addInternal(q1, q2, targetUnit);
         }
 
         @Override
@@ -86,28 +91,21 @@ public class QuantityMeasurementApp {
         }
     }
 
-    // Main method (demo)
+    // Demo
     public static void main(String[] args) {
 
         Quantity f1 = new Quantity(1.0, LengthUnit.FEET);
         Quantity i12 = new Quantity(12.0, LengthUnit.INCH);
-        Quantity y1 = new Quantity(1.0, LengthUnit.YARD);
-        Quantity cm = new Quantity(2.54, LengthUnit.CENTIMETER);
 
-        // Same unit
-        System.out.println(f1.add(new Quantity(2.0, LengthUnit.FEET))); // 3 ft
+        System.out.println(Quantity.add(f1, i12, LengthUnit.FEET));   // 2 ft
+        System.out.println(Quantity.add(f1, i12, LengthUnit.INCH));   // 24 inch
+        System.out.println(Quantity.add(f1, i12, LengthUnit.YARD));   // ~0.667 yard
 
-        // Cross unit
-        System.out.println(f1.add(i12)); // 2 ft
-        System.out.println(i12.add(f1)); // 24 inch
+        System.out.println(f1.add(i12, LengthUnit.YARD)); // instance version
 
-        // Yard + feet
-        System.out.println(y1.add(new Quantity(3.0, LengthUnit.FEET))); // 2 yard
-
-        // cm + inch
-        System.out.println(cm.add(new Quantity(1.0, LengthUnit.INCH))); // ~5.08 cm
-
-        // Static method
-        System.out.println(Quantity.add(f1, i12, LengthUnit.FEET)); // 2 ft
+        System.out.println(Quantity.add(
+                new Quantity(36, LengthUnit.INCH),
+                new Quantity(1, LengthUnit.YARD),
+                LengthUnit.FEET)); // 6 ft
     }
 }
