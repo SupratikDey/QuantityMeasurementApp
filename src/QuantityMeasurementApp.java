@@ -4,23 +4,29 @@ public class QuantityMeasurementApp {
 
     public static void main(String[] args) {
 
-        Quantity q1 = new Quantity(1.0, LengthUnit.FEET);
-        Quantity q2 = new Quantity(12.0, LengthUnit.INCH);
+        // 🔹 LENGTH (UC8)
+        QuantityLength l1 = new QuantityLength(1.0, LengthUnit.FEET);
+        QuantityLength l2 = new QuantityLength(12.0, LengthUnit.INCHES);
 
-        // Conversion
-        System.out.println(q1.convertTo(LengthUnit.INCH)); // 12 inches
+        System.out.println("Length Equal: " + l1.equals(l2));
+        System.out.println("Length Add: " + l1.add(l2, LengthUnit.FEET));
+        System.out.println("Length Convert: " + l1.convertTo(LengthUnit.INCHES));
 
-        // Equality
-        System.out.println(q1.equals(q2)); // true
+        System.out.println("------------");
 
-        // Addition (UC6)
-        System.out.println(q1.add(q2)); // 2 feet
+        // 🔹 WEIGHT (UC9)
+        QuantityWeight w1 = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
+        QuantityWeight w2 = new QuantityWeight(1000.0, WeightUnit.GRAM);
 
-        // Addition with target (UC7)
-        System.out.println(q1.add(q2, LengthUnit.YARD)); // ~0.667 yard
+        System.out.println("Weight Equal: " + w1.equals(w2));
 
-        // Direct enum usage (UC8 feature)
-        System.out.println(LengthUnit.INCH.convertToBaseUnit(12)); // 1 foot
+        QuantityWeight sum = w1.add(w2);
+        System.out.println("Weight Add: " + sum);
+
+        QuantityWeight converted = w1.convertTo(WeightUnit.POUND);
+        System.out.println("Weight Convert: " + converted);
+
+        // Cross-category check
+        System.out.println("Weight vs Length: " + w1.equals(l1)); // false
     }
 }
-
