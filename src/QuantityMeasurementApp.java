@@ -27,5 +27,23 @@ public class QuantityMeasurementApp {
 
         // ✅ If forced (unsafe)
         System.out.println("Cross-category: " + ((Object) w1).equals(l1));
+        System.out.println("------------");
+
+// 🔹 VOLUME (UC11)
+        Quantity<VolumeUnit> v1 = new Quantity<>(1.0, VolumeUnit.LITRE);
+        Quantity<VolumeUnit> v2 = new Quantity<>(1000.0, VolumeUnit.MILLILITRE);
+        Quantity<VolumeUnit> v3 = new Quantity<>(1.0, VolumeUnit.GALLON);
+
+// Equality
+        System.out.println("Volume Equal (L vs mL): " + v1.equals(v2));
+        System.out.println("Volume Equal (L vs Gallon): " + v1.equals(v3));
+
+// Conversion
+        System.out.println("Convert L → mL: " + v1.convertTo(VolumeUnit.MILLILITRE));
+        System.out.println("Convert Gallon → L: " + v3.convertTo(VolumeUnit.LITRE));
+
+// Addition
+        System.out.println("Add (L + mL): " + v1.add(v2));
+        System.out.println("Add (L + Gallon → mL): " + v1.add(v3, VolumeUnit.MILLILITRE));
     }
 }
