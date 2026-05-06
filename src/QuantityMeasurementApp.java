@@ -1,12 +1,10 @@
-import java.util.*;
-
 public class QuantityMeasurementApp {
 
     public static void main(String[] args) {
 
-        // 🔹 LENGTH (UC8)
-        QuantityLength l1 = new QuantityLength(1.0, LengthUnit.FEET);
-        QuantityLength l2 = new QuantityLength(12.0, LengthUnit.INCHES);
+        // 🔹 LENGTH
+        Quantity<LengthUnit> l1 = new Quantity<>(1.0, LengthUnit.FEET);
+        Quantity<LengthUnit> l2 = new Quantity<>(12.0, LengthUnit.INCHES);
 
         System.out.println("Length Equal: " + l1.equals(l2));
         System.out.println("Length Add: " + l1.add(l2, LengthUnit.FEET));
@@ -14,19 +12,20 @@ public class QuantityMeasurementApp {
 
         System.out.println("------------");
 
-        // 🔹 WEIGHT (UC9)
-        QuantityWeight w1 = new QuantityWeight(1.0, WeightUnit.KILOGRAM);
-        QuantityWeight w2 = new QuantityWeight(1000.0, WeightUnit.GRAM);
+        // 🔹 WEIGHT
+        Quantity<WeightUnit> w1 = new Quantity<>(1.0, WeightUnit.KILOGRAM);
+        Quantity<WeightUnit> w2 = new Quantity<>(1000.0, WeightUnit.GRAM);
 
         System.out.println("Weight Equal: " + w1.equals(w2));
+        System.out.println("Weight Add: " + w1.add(w2));
+        System.out.println("Weight Convert: " + w1.convertTo(WeightUnit.POUND));
 
-        QuantityWeight sum = w1.add(w2);
-        System.out.println("Weight Add: " + sum);
+        System.out.println("------------");
 
-        QuantityWeight converted = w1.convertTo(WeightUnit.POUND);
-        System.out.println("Weight Convert: " + converted);
+        // ❌ This WON'T COMPILE (GOOD THING)
+        // w1.equals(l1);
 
-        // Cross-category check
-        System.out.println("Weight vs Length: " + w1.equals(l1)); // false
+        // ✅ If forced (unsafe)
+        System.out.println("Cross-category: " + ((Object) w1).equals(l1));
     }
 }
